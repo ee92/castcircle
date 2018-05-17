@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Logout from './Logout'
-import { Grid, Button, Checkbox } from 'material-ui'
+import { Grid, Button  } from 'material-ui'
 
 class InvitePeople extends Component {
 

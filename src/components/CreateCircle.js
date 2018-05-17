@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { db } from './../firebase'
 import Logout from './Logout'
-import { Redirect } from 'react-router-dom'
 import { Grid, Button, Checkbox } from 'material-ui'
 
 class CreateCircle extends Component {
@@ -13,29 +12,34 @@ class CreateCircle extends Component {
   }
 
   createCircle = () => {
-    let data = {
-      uid: this.props.state.user.uid,
-      email: this.props.state.user.email
-    }
     db.collection('users').doc(this.props.state.user.uid).collection('circles').add({}).then((circle) => {
-      console.log("write success")
       db.collection('circles').doc(circle.id).set({
         circleName: this.state.input,
         creatorBroadcastOnly: this.state.checkbox,
         creatorId: this.props.state.user.uid
-      })
-      db.collection('circles').doc(circle.id).collection('channels').add({
-        channelName: "General"
-      }).then((channel) => {
-        db.collection('circles').doc(circle.id).collection('channels').doc(channel.id)
-        .collection('members').doc(this.props.state.user.uid).set({
+      }).then(() => {
+        db.collection('circles').doc(circle.id).collection('members').doc(this.props.state.user.uid).set({
           userId: this.props.state.user.uid,
           email: this.props.state.user.email
+        }).then(() => {
+          db.collection('circles').doc(circle.id).collection('channels').add({
+            channelName: "General"
+          }).then((channel) => {
+            db.collection('circles').doc(circle.id).collection('channels').doc(channel.id)
+            .collection('members').doc(this.props.state.user.uid).set({
+              userId: this.props.state.user.uid,
+              email: this.props.state.user.email
+            }).then(() => {
+              db.collection('users').doc(this.props.state.user.uid).set({
+                lastCircle: circle.id,
+                displayName: this.props.state.user.displayName,
+                email: this.props.state.user.email
+              }).then(() => {
+                window.location.pathname = "/invite-people"
+              })
+            })
+          })
         })
-      })
-      db.collection('circles').doc(circle.id).collection('members').doc(this.props.state.user.uid).set({
-        userId: this.props.state.user.uid,
-        email: this.props.state.user.email
       })
     })
   }
@@ -44,7 +48,7 @@ class CreateCircle extends Component {
     this.setState({circleError: null})
     db.collection('circles').get().then((circles) => {
       circles.forEach((circle) => {
-        if (this.state.input == circle.data().circleName) {
+        if (this.state.input === circle.data().circleName) {
           this.setState({circleError: "circle already exists"})
         }
       })
@@ -65,7 +69,7 @@ class CreateCircle extends Component {
   }
 
   render() {
-    console.log(this.props.state.user.uid)
+    console.log(this.props.state.user)
     return (
       <Grid container className="root bg-gray">
         <Grid item xs={12} md={4} className="text-white bg-red">

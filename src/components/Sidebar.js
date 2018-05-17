@@ -8,7 +8,7 @@ const styles = {
   drawerPaper: {
     width: '300px',
     background: 'rgb(48,0,50)'
-  },
+  }
 }
 
 class Sidebar extends React.Component {
@@ -31,47 +31,56 @@ class Sidebar extends React.Component {
     })
   }
 
+  getChannels() {
+    db.collection('users').doc(this.props.user.uid).get((user) => {
+      console.log(user.data().lastCircle)
+    })
+  }
+
   componentDidMount() {
     this.getCircles()
+    this.getChannels()
   }
 
   render() {
     const { classes } = this.props
     return (
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className="flex text-white">
-          <Logout/>
-          <div>
-            <h4>Logo</h4>
-          </div>
-          <div className="v-center">
+      <div>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className="flex text-white">
+            <Logout/>
             <div>
-              <div>
-                <h4>Circles</h4>
-                {this.state.circles.map((circle, i) => {
-                  return <p key={i}><a href='#'>{circle}</a></p>
-                })}
-              </div>
-              <div>
-                <h4>Channels</h4>
-                general
-              </div>
-              <div>
-                <h4>People</h4>
-                <p>ravi</p>
-                <p>misha</p>
-                <p>thomas</p>
-              </div>
+              <h4>Logo</h4>
             </div>
+            <div className="v-center">
+              <div>
+                <div>
+                  <h4>Circles</h4>
+                  {this.state.circles.map((circle, i) => {
+                    return <p key={i}><a href='/'>{circle}</a></p>
+                  })}
+                </div>
+                <div>
+                  <h4>Channels</h4>
+                  general
+                </div>
+                <div>
+                  <h4>People</h4>
+                  <p>ravi</p>
+                  <p>misha</p>
+                  <p>thomas</p>
+                </div>
+              </div>
 
+            </div>
           </div>
-        </div>
-      </Drawer>
+        </Drawer>
+      </div>
     )
   }
 }

@@ -10,6 +10,7 @@ import { auth } from './firebase'
 import Login from './components/Login'
 import CreateCircle from './components/CreateCircle'
 import InvitePeople from './components/InvitePeople'
+import Broadcast from './components/Broadcast'
 import Home from './components/Home'
 
 class Main extends Component {
@@ -34,6 +35,7 @@ class Main extends Component {
          <Switch>
            <PrivateRoute state={this.state} path="/create-circle" exact component={CreateCircle}/>
            <PrivateRoute state={this.state} path="/invite-people" exact component={InvitePeople}/>
+           <PrivateRoute state={this.state} path="/broadcast/:broadcast" component={Broadcast}/>
            <PrivateRoute state={this.state} path="/" exact component={Home}/>
            <Route path="/login" exact component={Login}/>
            <Route render={() => {
